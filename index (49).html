@@ -1,0 +1,747 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"/>
+<title>বাংলা ক্যালেন্ডার ১৪৩২</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<style>
+    /* --- Existing styles --- */
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali&display=swap');
+
+    body {
+      font-family: 'Noto Serif Bengali', serif; margin: 0; padding: 0;
+      background: linear-gradient(to right, #fff3e0, #ffecb3); color: #222;
+      transition: background 0.3s, color 0.3s;
+    }
+    .dark { background: linear-gradient(to right, #1e1e1e, #2c2c2c); color: #f0f0f0; }
+    header {
+      padding: 12px; background: linear-gradient(to right, #ffa726, #fb8c00); color: white;
+      font-size: 24px; font-weight: bold; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .dark header { background: #333; }
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;
+      font-size: 14px; background-color: #ffe082; flex-wrap: wrap; gap: 10px;
+    }
+    .dark .top-bar { background-color: #3a3a3a; }
+    .controls {
+      display: flex; justify-content: space-between; align-items: center; padding: 8px 15px;
+      flex-wrap: wrap; gap: 10px;
+    }
+    .control-group { display: flex; align-items: center; gap: 10px; }
+    .month-title { text-align: center; font-size: 20px; font-weight: bold; color: #ff6f00; }
+    button {
+      font-size: 20px; background: #ffd54f; border: none; border-radius: 6px; padding: 5px 10px;
+      cursor: pointer; transition: 0.3s; font-family: 'Hind Siliguri', sans-serif;
+    }
+    button:hover { background: #ffca28; }
+    .dark button { background: #555; color: white; }
+    .dark button:hover { background: #666; }
+    .nav-btn-container {
+        margin: 15px 10px; display: flex; gap: 8px; justify-content: center; align-items: center;
+    }
+    .nav-btn {
+      font-size: 0.95em; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px;
+      transition: background-color 0.3s, box-shadow 0.3s, filter 0.3s; color: white; font-weight: 500;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    #calendarBtn { background-color: #f44336; }
+    #festivalBtn { background-color: #ff9800; }
+    #panjikaBtn  { background-color: #2196F3; }
+    #rashifalBtn { background-color: #795548; color: white;}
+    #themeBtn    { background-color: #607d8b; }
+    .dark #calendarBtn { background-color: #c62828; }
+    .dark #festivalBtn { background-color: #e65100; }
+    .dark #panjikaBtn  { background-color: #1565C0; }
+    .dark #rashifalBtn { background-color: #4e342e; }
+    .dark #themeBtn    { background-color: #455a64; }
+    .nav-btn.active { box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.4); filter: brightness(1.15); }
+    .content-box {
+      max-height: 0; overflow: hidden; border: 1px solid transparent; padding: 0 15px;
+      margin: 0 10px 10px 10px; font-size: small;
+      transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out, opacity 0.5s ease-in-out, margin-top 0.5s ease-in-out;
+      opacity: 0; background: rgba(255, 255, 255, 0.6); border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .dark .content-box { background: rgba(40, 40, 40, 0.6); border-color: #444; }
+    .content-box.show {
+      max-height: 75vh; /* Adjusted max-height slightly */
+      overflow-y: auto; border-color: #ccc; padding: 15px; margin-top: 10px; opacity: 1;
+    }
+    .dark .content-box.show { border-color: #555; }
+    #calendarBox.show { padding: 10px; } /* Keep padding for calendar box */
+
+    /* --- MODIFIED Calendar Grid Styles --- */
+    .calendar {
+      display: grid; grid-template-columns: repeat(7, 1fr);
+      gap: 3px; /* Reduced gap */
+      padding: 0; font-size: 12px; /* Reduced base font size */
+      border: 1px solid yellow; background: #fffde7; border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin: 0; padding-bottom: 5px; /* Reduced bottom padding */
+    }
+    .dark .calendar { background: #2b2b2b; border-color: #555; }
+    .day { /* Weekday headers */
+      color: white; padding: 4px; /* Reduced padding */
+      font-size: 11px; /* Smaller font for weekdays */
+      text-align: center; font-weight: bold; border-radius: 4px;
+      position: sticky; top: 0; z-index: 1; background-color: #fff;
+    }
+    /* Weekday background colors remain same */
+    .calendar .day:nth-child(1) { background-color: #e57373; } /* Sun */
+    .calendar .day:nth-child(2) { background-color: #f06292; } /* Mon */
+    .calendar .day:nth-child(3) { background-color: #ba68c8; } /* Tue */
+    .calendar .day:nth-child(4) { background-color: #64b5f6; } /* Wed */
+    .calendar .day:nth-child(5) { background-color: #4db6ac; } /* Thu */
+    .calendar .day:nth-child(6) { background-color: #81c784; } /* Fri */
+    .calendar .day:nth-child(7) { background-color: #ffd54f; color: #000; } /* Sat */
+    .dark .day { background-color: #2b2b2b; }
+    .dark .calendar .day:nth-child(1) { background-color: #c62828; }
+    .dark .calendar .day:nth-child(2) { background-color: #ad1457; }
+    .dark .calendar .day:nth-child(3) { background-color: #6a1b9a; }
+    .dark .calendar .day:nth-child(4) { background-color: #1565c0; }
+    .dark .calendar .day:nth-child(5) { background-color: #00695c; }
+    .dark .calendar .day:nth-child(6) { background-color: #2e7d32; }
+    .dark .calendar .day:nth-child(7) { background-color: #ff8f00; color: #000; }
+    .date { /* Regular date cells */
+      background: linear-gradient(to bottom, #fff3e0, #ffe0b2); text-align: center;
+      padding: 3px 2px; /* Reduced padding */
+      border-radius: 5px; /* Smaller radius */
+      white-space: pre-line; color: #444; transition: 0.3s;
+      display: flex; flex-direction: column; justify-content: center; cursor: default;
+      min-height: 38px; /* Significantly Reduced min-height */
+      line-height: 1.2; /* Adjust line height */
+    }
+    .date:hover { background: #ffe082; transform: scale(1.05); z-index: 2; position: relative; }
+    .dark .date { background: #3e3e3e; color: #ddd; }
+    .dark .date:hover { background: #555; }
+    .today { background: #e53935 !important; color: white !important; font-weight: bold; border: 1px solid #ffcdd2; }
+    .dark .today { border: 1px solid #ef9a9a; }
+    .english-date-text {
+        font-size: 14px; /* Reduced font size */
+        font-weight: bold; margin-bottom: 1px; line-height: 1;
+    }
+    .sunday .english-date-text { color: red; }
+    .saturday .english-date-text { color: #c62828; }
+    .bengali-date-text {
+        font-size: 9px; /* Reduced font size */
+        color: #555; line-height: 1.1;
+    }
+    .dark .bengali-date-text { color: #bbb; }
+    .bengali-date-placeholder { font-size: 9px; color: #999; font-style: italic; }
+    .dark .bengali-date-placeholder { color: #777; }
+    /* --- End MODIFIED Calendar Grid Styles --- */
+
+    /* --- MODIFIED Holiday Cell Styles --- */
+    .holiday-cell {
+        background: linear-gradient(135deg, #c8e6c9, #a5d6a7); color: #1b5e20;
+        font-weight: bold;
+        font-size: 9px; /* Reduced font size */
+        display: flex; align-items: center; justify-content: center; text-align: center;
+        padding: 2px; /* Reduced padding */
+        line-height: 1.1; /* Adjust line height */
+        min-height: 38px; /* Match regular date cell height */
+        overflow: hidden; border-radius: 5px; /* Match radius */
+    }
+    /* Specific holiday examples */
+    .holiday-nababarsha { background: linear-gradient(135deg, #ffecb3, #ffd54f); color: #e65100; }
+    .holiday-rabindra { background: linear-gradient(135deg, #bbdefb, #90caf9); color: #0d47a1; }
+    .holiday-puja { background: linear-gradient(135deg, #ffcdd2, #ef9a9a); color: #b71c1c; }
+    .holiday-christmas { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); color: #d32f2f; }
+
+    .holiday-cell .english-date-text,
+    .holiday-cell .bengali-date-text,
+    .holiday-cell .bengali-date-placeholder { display: none; }
+    .dark .holiday-cell { background: linear-gradient(135deg, #2e7d32, #1b5e20); color: #c8e6c9; }
+    .dark .holiday-nababarsha { background: linear-gradient(135deg, #ff8f00, #e65100); color: #fff3e0; }
+    .dark .holiday-rabindra { background: linear-gradient(135deg, #1565c0, #0d47a1); color: #e3f2fd; }
+    .dark .holiday-puja { background: linear-gradient(135deg, #c62828, #b71c1c); color: #ffebee; }
+    .dark .holiday-christmas { background: linear-gradient(135deg, #d32f2f, #b71c1c); color: #e8f5e9; }
+    /* --- End MODIFIED Holiday Cell Styles --- */
+
+
+    /* --- Festival, Panjika, Date Display Styles (Mostly unchanged) --- */
+    #festivalBox h3 { text-align: center; margin: 5px 0 15px 0; color: #e65100; font-family: 'Hind Siliguri', sans-serif; }
+    #festivalBox ol { list-style-type: none; padding-left: 0; font-size: 0.95rem; line-height: 1.8; margin: 0; }
+    #festivalBox li { padding: 8px 5px; border-bottom: 1px dashed #ffcc80; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    #festivalBox li:last-child { border-bottom: none; }
+    #festivalBox li span:first-child { font-weight: 500; color: #d32f2f; white-space: nowrap; }
+    #festivalBox li span:last-child { text-align: right; flex-grow: 1; }
+    .dark #festivalBox li { border-bottom-color: #a1887f; }
+    .dark #festivalBox li span:first-child { color: #ef9a9a; }
+
+    #panjikaBox { font-family: 'Noto Sans Bengali', sans-serif; }
+    #panjikaBox h2 { text-align: center; color: #2c3e50; margin: 0 0 20px 0; padding: 10px; background: linear-gradient(90deg, #e3f2fd, #bbdefb); border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 1.4em; }
+    .dark #panjikaBox h2 { background: linear-gradient(90deg, #4a6d85, #5c7a94); color: #e0e0e0; }
+    .accordion-container { display: flex; flex-direction: column; gap: 10px; }
+    .toggle-btn { color: white; border: none; padding: 10px 18px; font-size: 15px; cursor: pointer; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; font-weight: bold; text-shadow: 1px 1px 1px rgba(0,0,0,0.2); position: relative; overflow: hidden; transition: all 0.3s ease; box-shadow: 0 3px 5px rgba(0,0,0,0.1); font-family: 'Noto Sans Bengali', sans-serif; }
+    .toggle-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 5px; height: 100%; background: rgba(255,255,255,0.3); transition: all 0.3s ease; }
+    .toggle-btn:hover::before { width: 100%; opacity: 0.1; }
+    .toggle-btn span { transition: transform 0.3s ease; font-size: 14px; }
+    .toggle-btn.active { border-radius: 8px 8px 0 0; }
+    .toggle-btn.active span { transform: rotate(90deg); }
+    .toggle-content { max-height: 0; overflow: hidden; padding: 0 15px; margin: 0; font-size: 14px; color: #333; transition: max-height 0.4s ease, padding 0.3s ease, background 0.3s, color 0.3s; border-radius: 0 0 8px 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); line-height: 1.6; }
+    .dark .toggle-content { color: #ddd; }
+    .toggle-content.open { padding: 15px; max-height: 500px; overflow-y: auto; }
+    #rashifol.open { max-height: 350px; }
+    [data-target="bibaho"] { background: linear-gradient(135deg, #ff758c, #ff7eb3); }
+    [data-target="diksha"] { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+    [data-target="namkaran"] { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+    [data-target="sadhubhokkhan"] { background: linear-gradient(135deg, #ff9a9e, #fad0c4); }
+    [data-target="amabashya"] { background: linear-gradient(135deg, #a18cd1, #fbc2eb); }
+    [data-target="utsob"] { background: linear-gradient(135deg, #ffc3a0, #ffafbd); }
+    [data-target="ekadoshi"] { background: linear-gradient(135deg, #ffd700, #ffb347); }
+    [data-target="rashifol"] { background: linear-gradient(135deg, #9face6, #74ebd5); }
+    [data-target="grihoprobesh"] { background: linear-gradient(135deg, #a6c1ee, #fbc2eb); }
+    [data-target="onnoprashon"] { background: linear-gradient(135deg, #ff8177, #ff867a); }
+    #bibaho { background: #fff0f3; border-left: 4px solid #ff758c; }
+    #diksha { background: #f0f9ff; border-left: 4px solid #4facfe; }
+    #namkaran { background: #f0fff4; border-left: 4px solid #43e97b; }
+    #sadhubhokkhan { background: #fff9f9; border-left: 4px solid #ff9a9e; }
+    #amabashya { background: #f9f0ff; border-left: 4px solid #a18cd1; }
+    #utsob { background: #fff5f0; border-left: 4px solid #ffc3a0; }
+    #ekadoshi { background: #fff8e1; border-left: 4px solid #ffd700; }
+    #rashifol { background: #f0f7ff; border-left: 4px solid #9face6; }
+    #grihoprobesh { background: #f9f0ff; border-left: 4px solid #a6c1ee; }
+    #onnoprashon { background: #fff0f0; border-left: 4px solid #ff8177; }
+    .dark #bibaho { background: #382328; border-left-color: #ff758c; }
+    .dark #diksha { background: #213340; border-left-color: #4facfe; }
+    .dark #namkaran { background: #1e332a; border-left-color: #43e97b; }
+    .dark #sadhubhokkhan { background: #382d2d; border-left-color: #ff9a9e; }
+    .dark #amabashya { background: #302938; border-left-color: #a18cd1; }
+    .dark #utsob { background: #382c28; border-left-color: #ffc3a0; }
+    .dark #ekadoshi { background: #38301c; border-left-color: #ffd700; }
+    .dark #rashifol { background: #2a313d; border-left-color: #9face6; }
+    .dark #grihoprobesh { background: #302938; border-left-color: #a6c1ee; }
+    .dark #onnoprashon { background: #382624; border-left-color: #ff8177; }
+
+    /* --- MODIFIED Rashifal Box Styles --- */
+    #rashifalBox h3 { text-align: center; margin: 5px 0 10px 0; color: #e65100; font-family: 'Hind Siliguri', sans-serif; }
+    .zodiac-container { padding: 5px; }
+    .zodiac-sign { margin-bottom: 15px; padding: 12px; background: #fff9c4; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .dark .zodiac-sign { background: #424242; }
+    .zodiac-title { font-size: 1.1rem; font-weight: bold; color: #e65100; margin-bottom: 8px; border-bottom: 1px solid #ffcc80; padding-bottom: 4px; font-family: 'Hind Siliguri', sans-serif; }
+    .dark .zodiac-title { color: #ffb74d; border-bottom-color: #ffa726; }
+    .zodiac-content {
+        line-height: 1.7;
+        font-size: 0.9rem; /* Slightly smaller font for details */
+        text-align: justify; /* Justify text for better readability */
+    }
+    .disclaimer { font-style: italic; margin-top: 20px; padding: 10px; background: #e3f2fd; border-radius: 5px; font-size: 0.85rem; }
+    .dark .disclaimer { background: #37474f; }
+    /* --- End MODIFIED Rashifal Box Styles --- */
+
+
+    .date-display { text-align: center; margin: 15px 10px; padding: 12px; background: #fff8e1; border-radius: 8px; border: 1px solid #ffe0b2; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .dark .date-display { background: #333; border-color: #444; }
+    .bengali-date { font-size: 1.5rem; font-weight: bold; color: #ff6f00; margin-bottom: 2px; }
+    .bengali-year { font-size: 1.125rem; color: #555; margin-bottom: 5px; }
+    .dark .bengali-year { color: #ccc; }
+    .english-date { font-size: 0.9rem; color: #444; margin-bottom: 3px; }
+    .dark .english-date { color: #bbb; }
+    .current-time { font-size: 0.9rem; color: #666; }
+    .dark .current-time { color: #aaa; }
+
+    /* Scrollbar styles (Unchanged, applies to .content-box when needed) */
+    .content-box::-webkit-scrollbar { width: 8px; }
+    .content-box::-webkit-scrollbar-track { background: rgba(241, 241, 241, 0.5); border-radius: 10px; }
+    .content-box::-webkit-scrollbar-thumb { background: #bbb; border-radius: 10px; border: 2px solid rgba(241, 241, 241, 0.5); }
+    .content-box::-webkit-scrollbar-thumb:hover { background: #999; }
+    .dark .content-box::-webkit-scrollbar-track { background: rgba(43, 43, 43, 0.5); }
+    .dark .content-box::-webkit-scrollbar-thumb { background: #666; border: 2px solid rgba(43, 43, 43, 0.5); }
+    .dark .content-box::-webkit-scrollbar-thumb:hover { background: #888; }
+
+    /* Media Query Adjustments for smaller calendar */
+    @media (max-width: 480px) {
+        #panjikaBox h2 { font-size: 1.2em; margin-bottom: 15px; }
+        .toggle-btn { font-size: 14px; padding: 10px 15px; }
+        .toggle-content { font-size: 13px; }
+        .nav-btn-container { gap: 5px; margin: 12px 5px;}
+        .nav-btn { font-size: 0.85em; padding: 4px 6px; } /* Slightly smaller nav buttons */
+
+        /* Further reduce calendar sizes on small screens */
+        .calendar { gap: 2px; }
+        .day { font-size: 10px; padding: 3px; }
+        .date, .holiday-cell {
+            min-height: 35px; /* Further reduced height */
+            padding: 2px 1px; /* Minimal padding */
+            border-radius: 4px;
+        }
+        .english-date-text { font-size: 12px; }
+        .bengali-date-text, .bengali-date-placeholder { font-size: 8px; }
+        .holiday-cell { font-size: 8px; line-height: 1.1;}
+
+        .zodiac-title { font-size: 1rem; }
+        .zodiac-content { font-size: 0.85rem; }
+        .date-display { padding: 10px; }
+        .bengali-date { font-size: 1.3rem; }
+        .bengali-year { font-size: 1rem; }
+    }
+
+</style>
+</head>
+<body class="light">
+<header>বাংলা ক্যালেন্ডার ১৪৩২ 🕉️</header>
+
+<div class="nav-btn-container">
+    <button id="calendarBtn" class="nav-btn">🗓️ ক্যালেন্ডার</button>
+    <button id="festivalBtn" class="nav-btn">🎉 উৎসব</button>
+    <button id="panjikaBtn" class="nav-btn">📜 পঞ্জিকা</button>
+    <button id="rashifalBtn" class="nav-btn">✨ রাশিফল</button>
+</div>
+
+<div class="top-bar">
+    <div id="gregDateTime">
+        <div id="gregDate"></div>
+        <div id="timeNow"></div>
+    </div>
+    <div id="bengaliTopDate" style="text-align: right;"></div>
+</div>
+
+<div class="controls">
+    <div class="control-group">
+        <button onclick="prevMonth()" aria-label="Previous Month">⏪</button>
+        <span class="month-title" id="monthLabel"></span>
+        <button onclick="nextMonth()" aria-label="Next Month">⏭️</button>
+    </div>
+    <button id="themeBtn" onclick="toggleDarkMode()" aria-label="Toggle Theme">🌙</button>
+</div>
+
+<div id="calendarBox" class="content-box">
+    <div class="calendar" id="calendar">
+        </div>
+</div>
+
+<div id="festivalBox" class="content-box">
+    <h3>১৪৩২ সালের ছুটির তালিকা ও উৎসব (শনি/রবি বাদে)</h3>
+    <ol id="festivalList">
+        </ol>
+     <p style="font-size: 0.8em; text-align: center; margin-top: 15px;">* চিহ্নিত উৎসবগুলির তারিখ চাঁদ দেখার উপর নির্ভরশীল।</p>
+</div>
+
+<div id="panjikaBox" class="content-box">
+     <h2>🔵 পঞ্জিকা 🔵</h2>
+    <div class="accordion-container">
+        <button class="toggle-btn" data-target="bibaho">বিবাহ <span>▶</span></button>
+        <div class="toggle-content" id="bibaho"> বিবাহ: ১৪, ১৫, ১৭, ২২, ২৩ বৈশাখ (আরও বিস্তারিত পঞ্জিকায়...) </div>
+        <button class="toggle-btn" data-target="diksha">দীক্ষা <span>▶</span></button>
+        <div class="toggle-content" id="diksha"> দীক্ষা: ১, ৪, ৫, ১০, ১৪, ১৭, ১৮, ১৯, ২০, ২৩, ২৫, ২৭, ২৮, ৩১ বৈশাখ (আরও বিস্তারিত পঞ্জিকায়...) </div>
+        <button class="toggle-btn" data-target="namkaran">নামকরণ <span>▶</span></button>
+        <div class="toggle-content" id="namkaran"> নামকরণ: ১, ৪, ৮, ১৩, ১৪, ১৮, ২৫, ২৭ বৈশাখ (আরও বিস্তারিত পঞ্জিকায়...) </div>
+        <button class="toggle-btn" data-target="sadhubhokkhan">সাধুভক্ষণ <span>▶</span></button>
+        <div class="toggle-content" id="sadhubhokkhan"> সাধভক্ষণ: ৮, ১৮ বৈশাখ (আরও বিস্তারিত পঞ্জিকায়...) </div>
+        <button class="toggle-btn" data-target="amabashya">অমাবস্যা <span>▶</span></button>
+        <div class="toggle-content" id="amabashya"> অমাবস্যা (বৈশাখ): ২৫ বৈশাখ / ৯ মে (শুক্রবার) (আরও বিস্তারিত পঞ্জিকায়...) </div>
+        <button class="toggle-btn" data-target="utsob">উৎসব <span>▶</span></button>
+        <div class="toggle-content" id="utsob"> উৎসবের বিস্তারিত বিবরণ শীঘ্রই আসছে... (নববর্ষ, রবীন্দ্র জয়ন্তী, দুর্গাপূজা, কালীপূজা ইত্যাদি)</div>
+        <button class="toggle-btn" data-target="ekadoshi">একাদশী <span>▶</span></button>
+        <div class="toggle-content" id="ekadoshi"> একাদশী: ৪ বৈশাখ (বরুথিনী), ১৯ বৈশাখ (মোহিনী) (আরও বিস্তারিত পঞ্জিকায়...) </div>
+        <button class="toggle-btn" data-target="rashifol">রাশিফল (আজ) <span>▶</span></button>
+        <div class="toggle-content" id="rashifol">
+            <strong>আজকের রাশিফল (<span id="panjika-rashifal-date"></span>):</strong>
+             <p><strong>মেষ:</strong> কর্মক্ষেত্রে অগ্রগতির সম্ভাবনা। আর্থিক লেনদেনে সতর্ক থাকুন...</p>
+             <p><strong>বৃষ:</strong> সৃজনশীল কাজে সাফল্য। পারিবারিক শান্তি বজায় থাকবে...</p>
+             <p><strong>মিথুন:</strong> যোগাযোগ বাড়বে। ভ্রমণে সতর্কতা অবলম্বন করুন...</p>
+             <p><strong>কর্কট:</strong> মানসিক স্থিরতা প্রয়োজন। স্বাস্থ্যের দিকে নজর দিন...</p>
+             <p><strong>সিংহ:</strong> আত্মবিশ্বাস বাড়বে। কর্মক্ষেত্রে দায়িত্ব বৃদ্ধি...</p>
+             <p><strong>কন্যা:</strong> পরিকল্পনা বাস্তবায়নে বাধা। ধৈর্য্য ধরে এগিয়ে যান...</p>
+             <p><strong>তুলা:</strong> ব্যবসায় লাভের সম্ভাবনা। অপ্রয়োজনীয় খরচ এড়িয়ে চলুন...</p>
+             <p><strong>বৃশ্চিক:</strong> সামাজিক সম্মান বৃদ্ধি। নতুন সম্পর্ক স্থাপন হতে পারে...</p>
+             <p><strong>ধনু:</strong> উচ্চশিক্ষার সুযোগ। আইনি জটিলতা এড়িয়ে চলুন...</p>
+             <p><strong>মকর:</strong> কর্মস্থলে পরিবর্তন আসতে পারে। বিনিয়োগের পূর্বে বিবেচনা করুন...</p>
+             <p><strong>কুম্ভ:</strong> স্বাস্থ্যের উন্নতি। অপ্রত্যাশিত প্রাপ্তিযোগ...</p>
+             <p><strong>মীন:</strong> আধ্যাত্মিক বিষয়ে আগ্রহ বাড়বে। মানসিক শান্তি লাভ...</p>
+             <p style="font-size:0.8em; margin-top:10px;"><i>(এটি একটি সাধারণ দৈনিক পূর্বাভাস, বিস্তারিত তথ্যের জন্য পঞ্জিকা দেখুন।)</i></p>
+        </div>
+        <button class="toggle-btn" data-target="grihoprobesh">গৃহপ্রবেশ <span>▶</span></button>
+        <div class="toggle-content" id="grihoprobesh"> গৃহপ্রবেশ: শুভ তিথি নক্ষত্র অনুযায়ী নির্ধারিত হবে। (বিস্তারিত পঞ্জিকায় দেখুন)</div>
+        <button class="toggle-btn" data-target="onnoprashon">অন্নপ্রাশন <span>▶</span></button>
+        <div class="toggle-content" id="onnoprashon"> অন্নপ্রাশন: শুভ তিথি নক্ষত্র অনুযায়ী নির্ধারিত হবে। (বিস্তারিত পঞ্জিকায় দেখুন)</div>
+    </div>
+</div>
+
+<div id="rashifalBox" class="content-box">
+     <div class="zodiac-container">
+        <h3>বর্ষব্যাপী রাশিফল (১৪৩২ বঙ্গাব্দ)</h3>
+        <p style="text-align: center; font-size: 0.9em; margin-bottom: 20px; font-style: italic;">(এপ্রিল ২০২৫ - এপ্রিল ২০২৬)</p>
+
+        <div class="zodiac-sign">
+            <div class="zodiac-title">♈ মেষ রাশি</div>
+            <div class="zodiac-content">১৪৩২ বঙ্গাব্দ মেষ রাশির জাতক-জাতিকাদের জন্য শক্তি, উদ্যম ও নতুন সূচনার বছর হতে পারে। কর্মক্ষেত্রে নতুন সুযোগ আসবে, তবে শনি ও রাহুর প্রভাবে কিছু চ্যালেঞ্জও মোকাবেলা করতে হতে পারে। তাড়াহুড়ো সিদ্ধান্ত এড়িয়ে চলুন। আর্থিক দিকে উন্নতি হলেও ব্যয় বৃদ্ধির সম্ভাবনা রয়েছে। বছরের মধ্যভাগে অপ্রত্যাশিত লাভ হতে পারে। স্বাস্থ্যের প্রতি বিশেষ মনোযোগ দিন, বিশেষত পেটের সমস্যা ও আঘাতজনিত বিষয়ে। পারিবারিক জীবনে বোঝাপড়া বজায় রাখা জরুরি। শিক্ষার্থীদের জন্য বছরটি শুভ, প্রতিযোগিতামূলক পরীক্ষায় সাফল্য আসতে পারে। প্রেম জীবনে উত্থান-পতন থাকবে।</div>
+        </div>
+        <div class="zodiac-sign">
+            <div class="zodiac-title">♉ বৃষ রাশি</div>
+            <div class="zodiac-content">এই বছর বৃষ রাশির জাতকদের জন্য স্থিতিশীলতা ও অগ্রগতির বছর। শুক্রের প্রভাবে সৃজনশীলতা ও শৈল্পিক কাজে সাফল্য আসবে। আর্থিক অবস্থা মজবুত হবে, নতুন বিনিয়োগ লাভজনক হতে পারে। কর্মক্ষেত্রে পদোন্নতি বা দায়িত্ব বৃদ্ধির যোগ রয়েছে। পারিবারিক জীবন সুখের হবে, পরিবারে মাঙ্গলিক অনুষ্ঠান হতে পারে। স্বাস্থ্যের দিক থেকে বছরটি মোটের উপর ভালো গেলেও, অলসতা ত্যাগ করা প্রয়োজন। শিক্ষার্থীদের একাগ্রতা বাড়াতে হবে। অবিবাহিতদের বিবাহের সম্ভাবনা উজ্জ্বল। ব্যবসায়ীরা নতুন অংশীদারিত্বে যেতে পারেন।</div>
+        </div>
+        <div class="zodiac-sign">
+            <div class="zodiac-title">♊ মিথুন রাশি</div>
+            <div class="zodiac-content">মিথুন রাশির জন্য এই বছরটি পরিবর্তন ও যোগাযোগের বছর। বুধের প্রভাবে বুদ্ধি ও যুক্তির বিকাশ ঘটবে। কর্মক্ষেত্রে পরিবর্তন বা নতুন কাজের সুযোগ আসতে পারে। তবে কেতুর অবস্থান কিছু বিভ্রান্তি সৃষ্টি করতে পারে, তাই সিদ্ধান্ত নেওয়ার আগে ভালোভাবে विचार করুন। আর্থিক দিক মিশ্র থাকবে, আয় বাড়লেও খরচ নিয়ন্ত্রণ করা কঠিন হতে পারে। ভাইবোনের সঙ্গে সম্পর্ক উন্নত হবে। স্বল্প দূরত্বের ভ্রমণ লাভদায়ক হতে পারে। স্বাস্থ্য নিয়ে সচেতন থাকুন, বিশেষ করে স্নায়বিক সমস্যা বা ত্বকের রোগ বিষয়ে। প্রেম জীবনে বোঝাপড়া বৃদ্ধি পাবে।</div>
+        </div>
+         <div class="zodiac-sign">
+            <div class="zodiac-title">♋ কর্কট রাশি</div>
+            <div class="zodiac-content">১৪৩২ সাল কর্কট রাশির জাতকদের জন্য আবেগ ও সম্পর্কের উপর বেশি আলোকপাত করবে। চন্দ্রের প্রভাবে মানসিক সংবেদনশীলতা বাড়বে। পারিবারিক জীবনে সুখ-শান্তি বজায় থাকবে, তবে মায়ের স্বাস্থ্যের দিকে নজর দিন। কর্মক্ষেত্রে স্থিতিশীলতা থাকলেও, অতিরিক্ত আবেগপ্রবণতা এড়িয়ে চলুন। আর্থিক দিক থেকে বছরটি ভালো, সঞ্চয়ের সুযোগ বাড়বে। জমি বা সম্পত্তি সংক্রান্ত বিষয়ে লাভ হতে পারে। স্বাস্থ্যের ক্ষেত্রে মানসিক চাপ এড়িয়ে চলুন এবং পর্যাপ্ত বিশ্রাম নিন। শিক্ষার্থীদের জন্য সময় অনুকূল। দাম্পত্য জীবনে মধুরতা বাড়বে।</div>
+        </div>
+         <div class="zodiac-sign">
+            <div class="zodiac-title">♌ সিংহ রাশি</div>
+            <div class="zodiac-content">সিংহ রাশির জাতক-জাতিকাদের জন্য এই বছরটি আত্মবিশ্বাস ও নেতৃত্বের বছর। রবির প্রভাবে সমাজে মান-সম্মান বৃদ্ধি পাবে। কর্মক্ষেত্রে সাফল্য ও পদোন্নতির প্রবল সম্ভাবনা। নতুন দায়িত্ব নেওয়ার জন্য প্রস্তুত থাকুন। আর্থিক অবস্থা শক্তিশালী হবে, তবে অহংকার ও অতিরিক্ত ঝুঁকি নেওয়া থেকে বিরত থাকুন। পিতার সঙ্গে সম্পর্ক উন্নত হবে বা তাঁর সহযোগিতা পাবেন। স্বাস্থ্যের দিক থেকে বছরটি অনুকূল থাকবে, পুরনো রোগ থেকে মুক্তি মিলতে পারে। শিক্ষার্থীদের উচ্চশিক্ষার সুযোগ আসবে। প্রেম জীবনে উষ্ণতা বজায় থাকবে।</div>
+        </div>
+        <div class="zodiac-sign">
+            <div class="zodiac-title">♍ কন্যা রাশি</div>
+            <div class="zodiac-content">কন্যা রাশির জন্য এই বছরটি বিশ্লেষণ ও পরিকল্পনার বছর। বুধের প্রভাবে বুদ্ধিমত্তা ও কর্মদক্ষতা বাড়বে। কর্মক্ষেত্রে পরিশ্রমের সঠিক মূল্যায়ন হবে, তবে সহকর্মীদের সঙ্গে সম্পর্ক ভালো রাখা জরুরি। আর্থিক দিক থেকে উন্নতি হলেও, হিসাব করে চলা প্রয়োজন। ঋণ সংক্রান্ত বিষয় থেকে মুক্তি মিলতে পারে। স্বাস্থ্যের প্রতি যত্নশীল হতে হবে, বিশেষ করে হজমের সমস্যা বা স্নায়বিক দুর্বলতা বিষয়ে। পারিবারিক জীবনে কিছু ভুল বোঝাবুঝি হতে পারে, ধৈর্য্য ধরে সমাধান করুন। গবেষণামূলক কাজে যুক্ত শিক্ষার্থীদের জন্য বছরটি অত্যন্ত শুভ।</div>
+        </div>
+         <div class="zodiac-sign">
+            <div class="zodiac-title">♎ তুলা রাশি</div>
+            <div class="zodiac-content">তুলা রাশির জাতকদের জন্য ১৪৩২ সাল ভারসাম্য ও অংশীদারিত্বের উপর জোর দেবে। শুক্রের প্রভাবে সম্পর্কগুলির উন্নতি হবে। ব্যবসায়ীদের জন্য বছরটি লাভজনক, নতুন অংশীদারিত্ব বা চুক্তি হতে পারে। কর্মক্ষেত্রে পরিবেশ অনুকূল থাকবে। অবিবাহিতদের বিবাহের যোগ রয়েছে। দাম্পত্য জীবনে সুখ ও বোঝাপড়া বৃদ্ধি পাবে। আর্থিক দিক থেকে আয় ও ব্যয় উভয়ই বাড়বে, তাই বাজেট পরিকল্পনা জরুরি। স্বাস্থ্যের ক্ষেত্রে সামান্য উত্থান-পতন থাকতে পারে, জীবনযাত্রায় শৃঙ্খলা আনুন। আইনি মামলায় সাফল্য আসতে পারে।</div>
+        </div>
+         <div class="zodiac-sign">
+            <div class="zodiac-title">♏ বৃশ্চিক রাশি</div>
+            <div class="zodiac-content">বৃশ্চিক রাশির জন্য এই বছরটি গভীর পরিবর্তন ও রূপান্তরের বছর হতে পারে। মঙ্গলের প্রভাবে সাহস ও দৃঢ়তা বৃদ্ধি পাবে, তবে ক্রোধ নিয়ন্ত্রণে রাখা জরুরি। কর্মক্ষেত্রে কিছু চ্যালেঞ্জ আসতে পারে, কিন্তু নিজের দক্ষতায় তা অতিক্রম করতে পারবেন। গোপন শত্রু সম্পর্কে সতর্ক থাকুন। আর্থিক দিক থেকে বছরটি মিশ্র ফলদায়ক, অপ্রত্যাশিত খরচ হতে পারে। আধ্যাত্মিক বিষয়ে আগ্রহ বাড়বে। স্বাস্থ্যের ক্ষেত্রে পুরনো সমস্যা আবার দেখা দিতে পারে, অবহেলা করবেন না। পারিবারিক সম্পত্তি নিয়ে विवाद এড়িয়ে চলুন। গভীর গবেষণায় সাফল্য মিলবে।</div>
+        </div>
+         <div class="zodiac-sign">
+            <div class="zodiac-title">♐ ধনু রাশি</div>
+            <div class="zodiac-content">ধনু রাশির জাতক-জাতিকাদের জন্য এই বছর জ্ঞানার্জন ও ভাগ্যোদয়ের বছর। বৃহস্পতির কৃপায় উচ্চশিক্ষা, ভ্রমণ ও আধ্যাত্মিক উন্নতি ঘটবে। কর্মক্ষেত্রে উন্নতি ও নতুন সুযোগ আসবে। আর্থিক অবস্থা ভালো থাকবে, ভাগ্য সহায় হবে। সন্তান সংক্রান্ত বিষয়ে শুভ খবর পেতে পারেন। সমাজে সম্মান ও প্রতিপত্তি বাড়বে। স্বাস্থ্যের দিক থেকে বছরটি অনুকূল। শিক্ষার্থীদের জন্য বিদেশে পড়াশোনার সুযোগ আসতে পারে। প্রেম জীবনে ইতিবাচক পরিবর্তন আসবে। দূরপাল্লার ভ্রমণ লাভজনক হতে পারে।</div>
+        </div>
+        <div class="zodiac-sign">
+            <div class="zodiac-title">♑ মকর রাশি</div>
+            <div class="zodiac-content">মকর রাশির জন্য ১৪৩২ সালটি কর্ম ও দায়িত্বের উপর বেশি মনোযোগ দেবে। শনির প্রভাবে পরিশ্রম বাড়লেও তার সুফল পাবেন। কর্মক্ষেত্রে স্থিতিশীলতা আসবে এবং পদোন্নতির সম্ভাবনা তৈরি হবে। ব্যবসায়িক ক্ষেত্রে ধীরে ধীরে উন্নতি হবে। আর্থিক দিক থেকে সঞ্চয় বাড়বে, তবে বিনিয়োগের পূর্বে ভালোভাবে বিচার করুন। পারিবারিক দায়িত্ব বৃদ্ধি পাবে। স্বাস্থ্যের ক্ষেত্রে কিছুটা মনোযোগ প্রয়োজন, বিশেষ করে হাড় ও দাঁতের সমস্যা বিষয়ে। ধৈর্য্য ও শৃঙ্খলার সাথে কাজ করলে বছরটি সফল হবে। সম্পত্তি সংক্রান্ত বিষয়ে লাভ হতে পারে।</div>
+        </div>
+         <div class="zodiac-sign">
+            <div class="zodiac-title">♒ কুম্ভ রাশি</div>
+            <div class="zodiac-content">কুম্ভ রাশির জাতকদের জন্য এই বছরটি উদ্ভাবন ও সামাজিক যোগাযোগের বছর। শনি ও রাহুর প্রভাব জীবনে কিছু আকস্মিক পরিবর্তন আনতে পারে। কর্মক্ষেত্রে নতুন ধারণা নিয়ে কাজ করতে পারেন, যা প্রশংসিত হবে। বন্ধুদের সহযোগিতা পাবেন। আর্থিক দিক থেকে আয় বৃদ্ধি পাবে, তবে অপ্রত্যাশিত ব্যয়ও হতে পারে। বড় ভাইবোনের সঙ্গে সম্পর্ক ভালো থাকবে। স্বাস্থ্যের ক্ষেত্রে কিছুটা সতর্ক থাকা প্রয়োজন, বিশেষত পায়ের সমস্যা বা অনিদ্রা নিয়ে। শিক্ষার্থীদের নতুন কিছু শেখার আগ্রহ বাড়বে। সামাজিক কাজে যুক্ত হওয়ার সুযোগ আসবে।</div>
+        </div>
+         <div class="zodiac-sign">
+            <div class="zodiac-title">♓ মীন রাশি</div>
+            <div class="zodiac-content">মীন রাশির জন্য এই বছরটি আধ্যাত্মিকতা ও অন্তর্দৃষ্টির বছর। বৃহস্পতির প্রভাবে আত্মিক উন্নতি ও জ্ঞানের বিকাশ ঘটবে। কর্মক্ষেত্রে কিছু অনিশ্চয়তা থাকলেও নিজের প্রতিভায় তা সামলে নিতে পারবেন। বিদেশে কাজের সুযোগ বা বৈদেশিক যোগাযোগ বৃদ্ধি পেতে পারে। আর্থিক দিক থেকে ব্যয় নিয়ন্ত্রণ করা জরুরি, অন্যথায় সঞ্চয়ে ঘাটতি হতে পারে। ধ্যান ও আধ্যাত্মিক চর্চা মানসিক শান্তি দেবে। স্বাস্থ্যের ক্ষেত্রে অবহেলা করবেন না, বিশেষ করে পায়ের পাতা বা চোখের সমস্যা। লুকানো প্রতিভা প্রকাশের সুযোগ আসবে। দানধ্যান করলে মানসিক শান্তি পাবেন।</div>
+        </div>
+
+        <div class="disclaimer">এই রাশিফল গ্রহের অবস্থান ও সাধারণ গণনার উপর ভিত্তি করে তৈরি। এটি একটি সম্ভাব্য নির্দেশিকা মাত্র। ব্যক্তিগত জন্মকুন্ডলী বিচার করলে ফলাফলের তারতম্য হতে পারে। কোনো গুরুত্বপূর্ণ সিদ্ধান্ত নেওয়ার আগে বিশেষজ্ঞ জ্যোতিষীর পরামর্শ নিন।</div>
+    </div>
+</div>
+<div class="date-display">
+  <div class="bengali-date" id="bengali-date-display"></div>
+  <div class="bengali-year" id="bengali-year-display"></div>
+  <div class="english-date" id="english-date-display"></div>
+  <div class="current-time" id="current-time-display"></div>
+</div>
+
+<script>
+    // --- JavaScript (Mostly unchanged from previous version) ---
+    const banglaDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    const banglaMonths = ['বৈশাখ', 'জ্যৈষ্ঠ', 'আষাঢ়', 'শ্রাবণ', 'ভাদ্র', 'আশ্বিন', 'কার্তিক', 'অগ্রহায়ণ', 'পৌষ', 'মাঘ', 'ফাল্গুন', 'চৈত্র'];
+    const banglaDays = ['রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র', 'শনি'];
+    let viewDate = new Date();
+    let currentActiveBtn = 'calendarBtn';
+    const BENGALI_NEW_YEAR_1432_START = new Date(2025, 3, 15); // Apr 15, 2025
+    const BENGALI_NEW_YEAR_1433_START = new Date(2026, 3, 15); // Apr 15, 2026
+    const BENGALI_MONTH_LENGTHS_1432 = [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 30];
+
+    // Holiday Data for 1432 BS
+    const holidays_1432 = [
+        { year: 2025, month: 3, day: 15, name: "বাংলা নববর্ষ", cssClass: "holiday-nababarsha" },
+        { year: 2025, month: 4, day: 1, name: "মে দিবস", cssClass: "holiday-generic" },
+        { year: 2025, month: 4, day: 9, name: "রবীন্দ্র জয়ন্তী", cssClass: "holiday-rabindra" },
+        { year: 2025, month: 4, day: 12, name: "বুদ্ধ পূর্ণিমা", cssClass: "holiday-generic" },
+        { year: 2025, month: 7, day: 15, name: "স্বাধীনতা দিবস ও জন্মাষ্টমী", cssClass: "holiday-generic" },
+        { year: 2025, month: 8, day: 29, name: "দুর্গাপুজো (সপ্তমী)", cssClass: "holiday-puja" },
+        { year: 2025, month: 8, day: 30, name: "দুর্গাপুজো (অষ্টমী)", cssClass: "holiday-puja" },
+        { year: 2025, month: 9, day: 1, name: "দুর্গাপুজো (নবমী)", cssClass: "holiday-puja" },
+        { year: 2025, month: 9, day: 2, name: "বিজয়া দশমী ও গান্ধী জয়ন্তী", cssClass: "holiday-puja" },
+        { year: 2025, month: 9, day: 6, name: "লক্ষ্মীপুজো", cssClass: "holiday-generic" },
+        { year: 2025, month: 9, day: 20, name: "কালীপুজো", cssClass: "holiday-generic" },
+        { year: 2025, month: 9, day: 23, name: "ভ্রাতৃদ্বিতীয়া", cssClass: "holiday-generic" },
+        // { year: 2025, month: 9, day: 27, name: "ছট পুজো*", cssClass: "holiday-generic" }, // Example
+        { year: 2025, month: 10, day: 5, name: "গুরু নানক জয়ন্তী", cssClass: "holiday-generic" },
+        { year: 2025, month: 11, day: 25, name: "বড়দিন", cssClass: "holiday-christmas" },
+        { year: 2026, month: 0, day: 23, name: "নেতাজী জয়ন্তী", cssClass: "holiday-generic" },
+        // Add more holidays for 2026 (Jan-Apr) if needed
+    ];
+    const holidaysMap = new Map(holidays_1432.map(h => [`${h.year}-${h.month}-${h.day}`, h]));
+
+    // Helper Functions (toBanglaDigits, getBengaliDate - unchanged)
+     function toBanglaDigits(num) {
+      if (num === null || num === undefined) return '';
+      return num.toString().split('').map(d => banglaDigits[parseInt(d)] || d).join('');
+    }
+
+    function getBengaliDate(gregDate) {
+        const targetGregDate = new Date(gregDate.getFullYear(), gregDate.getMonth(), gregDate.getDate());
+        let bYear, bMonthIndex, bDate;
+        const bWeekday = banglaDays[gregDate.getDay()];
+        let holidayName = null;
+        let holidayCssClass = null;
+
+        const holidayKey = `${targetGregDate.getFullYear()}-${targetGregDate.getMonth()}-${targetGregDate.getDate()}`;
+        if (holidaysMap.has(holidayKey)) {
+            const holidayInfo = holidaysMap.get(holidayKey);
+            holidayName = holidayInfo.name;
+            holidayCssClass = holidayInfo.cssClass || 'holiday-generic';
+        }
+
+        if (targetGregDate < BENGALI_NEW_YEAR_1432_START) {
+            const BENGALI_NEW_YEAR_1431_START = new Date(2024, 3, 14);
+             if (targetGregDate < BENGALI_NEW_YEAR_1431_START) {
+                bYear = 1430; return { year: bYear, month: 'পূর্ববর্তী', date: null, weekday: bWeekday, isPlaceholder: true, holidayName, holidayCssClass };
+             } else {
+                 bYear = 1431;
+                 return { year: bYear, month: 'চৈত্র (আনু.)', date: null, weekday: bWeekday, isPlaceholder: true, holidayName, holidayCssClass };
+             }
+        } else if (targetGregDate >= BENGALI_NEW_YEAR_1433_START) {
+            bYear = 1433; return { year: bYear, month: 'পরবর্তী', date: null, weekday: bWeekday, isPlaceholder: true, holidayName, holidayCssClass };
+        } else {
+            bYear = 1432;
+            const dayDiff = Math.floor((targetGregDate.getTime() - BENGALI_NEW_YEAR_1432_START.getTime()) / (1000 * 60 * 60 * 24));
+            let dayCount = dayDiff;
+            for (let i = 0; i < BENGALI_MONTH_LENGTHS_1432.length; i++) {
+                if (dayCount < BENGALI_MONTH_LENGTHS_1432[i]) { bMonthIndex = i; bDate = dayCount + 1; break; }
+                dayCount -= BENGALI_MONTH_LENGTHS_1432[i];
+            }
+             if (bMonthIndex === undefined || bDate === undefined) {
+                return { year: bYear, month: 'ত্রুটি', date: null, weekday: bWeekday, isPlaceholder: true, holidayName, holidayCssClass };
+             }
+            return { year: bYear, month: banglaMonths[bMonthIndex], date: bDate, weekday: bWeekday, isPlaceholder: false, holidayName, holidayCssClass };
+        }
+    }
+
+    // UI Update Functions (renderCalendar, updateTopBarAndDisplays, updateTimeDisplays - unchanged logic, but styling affected by CSS changes)
+     function renderCalendar(date) {
+        const cal = document.getElementById("calendar");
+        const year = date.getFullYear();
+        const month = date.getMonth();
+        const todayMarker = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+        const firstDayOfMonth = new Date(year, month, 1);
+        const lastDayOfMonth = new Date(year, month + 1, 0);
+        const firstDayWeekday = firstDayOfMonth.getDay();
+
+        document.getElementById("monthLabel").textContent = `${firstDayOfMonth.toLocaleString('bn-BD', { month: 'long' })} ${toBanglaDigits(year)}`;
+        cal.innerHTML = '';
+
+        banglaDays.forEach(dayName => { cal.innerHTML += `<div class='day'>${dayName}</div>`; });
+        for (let i = 0; i < firstDayWeekday; i++) { cal.innerHTML += `<div style='visibility: hidden;'></div>`; }
+
+        for (let d = 1; d <= lastDayOfMonth.getDate(); d++) {
+            const thisGregDate = new Date(year, month, d);
+            const bd = getBengaliDate(thisGregDate);
+            const isToday = thisGregDate.getTime() === todayMarker.getTime();
+            const isSunday = thisGregDate.getDay() === 0;
+            const isSaturday = thisGregDate.getDay() === 6;
+
+            let cellClasses = 'date';
+            let cellContentHtml = '';
+
+            if (bd.holidayName) {
+                cellClasses += ` holiday-cell ${bd.holidayCssClass || 'holiday-generic'}`;
+                if (isToday) cellClasses += ' today';
+                cellContentHtml = `<div>${bd.holidayName}</div>`;
+            } else {
+                if (isToday) cellClasses += ' today';
+                if (isSunday) cellClasses += ' sunday';
+                if (isSaturday) cellClasses += ' saturday';
+                let bengaliDateHtml;
+                if (bd.isPlaceholder || bd.date === null) {
+                    bengaliDateHtml = `<div class='bengali-date-placeholder'>${bd.month} ${toBanglaDigits(bd.year)}</div>`;
+                } else {
+                    bengaliDateHtml = `<div class='bengali-date-text'>${bd.month} ${toBanglaDigits(bd.date)}</div>`;
+                }
+                cellContentHtml = `<div><div class='english-date-text'>${d}</div>${bengaliDateHtml}</div>`;
+            }
+            cal.innerHTML += `<div class='${cellClasses}'>${cellContentHtml}</div>`;
+        }
+
+         const calendarBox = document.getElementById('calendarBox');
+         if (calendarBox.classList.contains('show')) {
+              const todayElement = cal.querySelector('.today');
+              if (todayElement && !document.hidden) {
+                  setTimeout(() => {
+                       // Only scroll if it's not already reasonably visible
+                       const rect = todayElement.getBoundingClientRect();
+                       const calRect = cal.getBoundingClientRect();
+                       if (rect.top < calRect.top || rect.bottom > calRect.bottom) {
+                            todayElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                       }
+                  }, 100);
+              }
+         }
+    }
+
+    function updateTopBarAndDisplays() {
+        const now = new Date();
+        const bd = getBengaliDate(now);
+        document.getElementById("gregDate").textContent = now.toLocaleDateString('en-GB', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+         if (bd.isPlaceholder || bd.date === null) {
+            document.getElementById("bengaliTopDate").textContent = `${bd.weekday}, ${bd.month} (${toBanglaDigits(bd.year)})`;
+            document.getElementById("bengali-date-display").textContent = `${bd.month}`;
+            document.getElementById("bengali-year-display").textContent = `${toBanglaDigits(bd.year)} বঙ্গাব্দ`;
+        } else {
+             document.getElementById("bengaliTopDate").textContent = `${bd.weekday}, ${toBanglaDigits(bd.date)} ${bd.month}, ${toBanglaDigits(bd.year)}`;
+             document.getElementById("bengali-date-display").textContent = `${toBanglaDigits(bd.date)} ${bd.month}`;
+             document.getElementById("bengali-year-display").textContent = `${toBanglaDigits(bd.year)} বঙ্গাব্দ`;
+        }
+        document.getElementById("english-date-display").textContent = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+         const panjikaDateEl = document.getElementById('panjika-rashifal-date');
+         if(panjikaDateEl) { panjikaDateEl.textContent = now.toLocaleDateString('bn-BD', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+        updateTimeDisplays();
+    }
+
+    function updateTimeDisplays() {
+        const now = new Date();
+        const timeStringBengali = now.toLocaleTimeString('bn-BD', { hour12: true, hour: 'numeric', minute:'2-digit', second: '2-digit' });
+        const timeStringEnglish = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true });
+        document.getElementById("timeNow").textContent = `সময়: ${timeStringBengali}`;
+        document.getElementById("current-time-display").textContent = `Current Time: ${timeStringEnglish}`;
+    }
+
+    // toggleDarkMode, applySavedTheme, toggleContent, prevMonth, nextMonth (Unchanged)
+     function toggleDarkMode() {
+        const body = document.body;
+        body.classList.toggle("dark"); body.classList.toggle("light");
+        const isDark = body.classList.contains("dark");
+        document.getElementById("themeBtn").textContent = isDark ? "☀️" : "🌙";
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    function applySavedTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if ((savedTheme === 'dark') || (!savedTheme && prefersDark)) {
+             document.body.classList.remove("light"); document.body.classList.add("dark");
+             document.getElementById("themeBtn").textContent = "☀️";
+        } else {
+             document.body.classList.remove("dark"); document.body.classList.add("light");
+             document.getElementById("themeBtn").textContent = "🌙";
+        }
+    }
+
+     function toggleContent(clickedBtnId) {
+        const calendarBox = document.getElementById('calendarBox');
+        const calendarBtn = document.getElementById('calendarBtn');
+        const clickedButton = document.getElementById(clickedBtnId);
+        const targetBoxId = clickedBtnId.replace('Btn', 'Box');
+        const targetBox = document.getElementById(targetBoxId);
+        let showCalendarInstead = false;
+
+        if (clickedBtnId !== 'calendarBtn' && targetBox && targetBox.classList.contains('show')) {
+            showCalendarInstead = true; // Toggle off if already shown, back to calendar
+        }
+
+        document.querySelectorAll('.content-box').forEach(box => {
+            if (box.classList.contains('show')) { box.classList.remove('show'); box.scrollTop = 0; } // Hide and reset scroll
+        });
+        document.querySelectorAll('.nav-btn-container .nav-btn').forEach(btn => btn.classList.remove('active'));
+
+        if (clickedBtnId === 'calendarBtn' || showCalendarInstead) {
+            calendarBox.classList.add('show'); calendarBtn.classList.add('active'); currentActiveBtn = 'calendarBtn';
+             // Scroll today into view logic (already in renderCalendar)
+             renderCalendar(viewDate); // Re-render might be needed if view changed while hidden
+        } else if (targetBox) {
+            targetBox.classList.add('show'); clickedButton.classList.add('active'); currentActiveBtn = clickedBtnId;
+             // If opening Panjika, ensure no accordion is open initially
+             if (targetBoxId === 'panjikaBox') {
+                 document.querySelectorAll('#panjikaBox .toggle-content.open').forEach(c => c.classList.remove('open'));
+                 document.querySelectorAll('#panjikaBox .toggle-btn.active').forEach(b => b.classList.remove('active'));
+             }
+        } else { // Fallback to calendar if target box not found
+            calendarBox.classList.add('show'); calendarBtn.classList.add('active'); currentActiveBtn = 'calendarBtn';
+            renderCalendar(viewDate);
+        }
+    }
+
+    function prevMonth() { viewDate.setMonth(viewDate.getMonth() - 1); renderCalendar(viewDate); }
+    function nextMonth() { viewDate.setMonth(viewDate.getMonth() + 1); renderCalendar(viewDate); }
+
+
+    // generateFestivalList (Unchanged)
+    function generateFestivalList() {
+        const listElement = document.getElementById('festivalList');
+        if (!listElement) return;
+        listElement.innerHTML = '';
+
+        holidays_1432.forEach(holiday => {
+            const holidayDate = new Date(holiday.year, holiday.month, holiday.day);
+            const dayOfWeek = holidayDate.getDay();
+
+            if (dayOfWeek !== 0 && dayOfWeek !== 6) { // Exclude Sunday and Saturday
+                const li = document.createElement('li');
+                const dateSpan = document.createElement('span');
+                dateSpan.textContent = holidayDate.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+                const eventSpan = document.createElement('span');
+                eventSpan.textContent = holiday.name;
+                li.appendChild(dateSpan); li.appendChild(eventSpan);
+                listElement.appendChild(li);
+            }
+        });
+    }
+
+    // --- Initialization (Unchanged logic) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        applySavedTheme();
+        generateFestivalList();
+
+        const navButtons = ['calendarBtn', 'festivalBtn', 'panjikaBtn', 'rashifalBtn'];
+        navButtons.forEach(btnId => {
+            const button = document.getElementById(btnId);
+            if (button) button.addEventListener('click', () => toggleContent(btnId));
+            else console.error(`Button with ID ${btnId} not found.`);
+        });
+
+        // Panjika Accordion Logic (Unchanged)
+        document.querySelectorAll('#panjikaBox .toggle-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const targetId = button.getAttribute('data-target');
+                const content = document.getElementById(targetId);
+                if (!content) { console.error(`Panjika content ID ${targetId} not found.`); return; }
+                const isOpen = content.classList.contains('open');
+                document.querySelectorAll('#panjikaBox .toggle-content.open').forEach(c => {
+                    if (c.id !== targetId) {
+                        c.classList.remove('open');
+                        const otherButton = document.querySelector(`#panjikaBox .toggle-btn[data-target="${c.id}"]`);
+                        if(otherButton) { otherButton.classList.remove('active'); otherButton.querySelector('span').style.transform = 'rotate(0deg)'; }
+                    }
+                });
+                if (!isOpen) {
+                    content.classList.add('open'); button.classList.add('active'); button.querySelector('span').style.transform = 'rotate(90deg)';
+                     const panjikaBox = document.getElementById('panjikaBox');
+                     if (panjikaBox && panjikaBox.classList.contains('show') && !document.hidden) {
+                        setTimeout(() => { button.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }, 100); // Scroll button into view
+                     }
+                } else {
+                    content.classList.remove('open'); button.classList.remove('active'); button.querySelector('span').style.transform = 'rotate(0deg)';
+                }
+            });
+        });
+
+        updateTopBarAndDisplays();
+        renderCalendar(viewDate);
+
+        // Activate default view: Calendar
+        currentActiveBtn = 'calendarBtn';
+        const defaultBtn = document.getElementById(currentActiveBtn);
+        const defaultBox = document.getElementById(currentActiveBtn.replace('Btn', 'Box'));
+        if (defaultBtn) defaultBtn.classList.add('active');
+        if (defaultBox) {
+            defaultBox.classList.add('show');
+             // Initial scroll to today if visible
+            const todayEl = defaultBox.querySelector('#calendar .today');
+            if (todayEl && !document.hidden) {
+                setTimeout(() => { todayEl.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 250);
+            }
+        }
+
+        setInterval(updateTimeDisplays, 1000);
+        // Update date less frequently now
+        setInterval(() => {
+             const now = new Date();
+             if (now.getSeconds() === 0 && now.getMinutes() === 0) { // Update dates only on the hour change
+                 updateTopBarAndDisplays();
+                 // Re-render calendar if the date changed (midnight)
+                 if (now.getHours() === 0) renderCalendar(viewDate);
+             }
+         }, 1000 * 60); // Check every minute
+        updateTopBarAndDisplays(); // Initial call
+    });
+</script>
+
+</body>
+</html>
